@@ -1,8 +1,20 @@
 import Slider from './slider';
 
 export default class MainSlider extends Slider {
-    constructor (page, btns) {
-        super(page, btns);
+    constructor (container, next, prev) {
+        super(container, next, prev);
+    }
+
+    firstPage() {
+        this.next.forEach(btn => {
+            if (btn.parentNode.previousElementSibling.tagName == 'A') {
+                btn.parentNode.previousElementSibling.addEventListener('click', () => {
+                    console.log('yes');
+                    this.slideIndex = 1;
+                    this.showSlides(this.slideIndex);
+                });
+            }
+        });
     }
     
     showSlides(newSlideIndex) {
@@ -27,12 +39,18 @@ export default class MainSlider extends Slider {
         } catch (e) {}
 
 
-        this.slides.forEach(slide => {
-            slide.style.display = 'none';
-            slide.classList.remove('animated', 'fadeIn');
-        });
-        this.slides[this.slideIndex - 1].style.display = 'block';
-        this.slides[this.slideIndex - 1].classList.add('animated', 'fadeIn');
+        try {
+            this.slides.forEach(slide => {
+                slide.style.display = 'none';
+                slide.classList.remove('animated', 'fadeIn');
+            });
+            
+            this.slides[this.slideIndex - 1].style.display = 'block';
+            this.slides[this.slideIndex - 1].classList.add('animated', 'fadeIn');
+        } catch(e) {}
+
+        this.firstPage();
+
     }
 
     changeSlides(direction) {
@@ -45,16 +63,18 @@ export default class MainSlider extends Slider {
             this.card = document.querySelector('.hanson');
         } catch(e) {}
 
-        this.btns.forEach(btn => {
+        this.next.forEach(btn => {
             btn.addEventListener('click', () => {
                 this.changeSlides(1);
             });
+        });
 
-            btn.parentNode.previousElementSibling.addEventListener('click', () => {
-                this.slideIndex = 1;
-                this.showSlides(this.slideIndex);
+        this.prev.forEach(btn => {
+            btn.addEventListener('click', () => {
+                this.changeSlides(-1);
             });
         });
     this.showSlides(this.slideIndex);
+    this.firstPage();
     }
 }
